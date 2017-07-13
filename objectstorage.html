@@ -61,7 +61,7 @@
             container: {value:"", required:true},
             query: {value:"", required:true},
             method: {value:"search", required:true},
-            osconfig: {value:"", type:"os-config", required:true}
+            osconfig: {value:"", type:"os-servivce", required:true}
         },
         inputs:1,               
         outputs:1, 
@@ -90,7 +90,7 @@
 <!--  Object Storage Container Node   -->
 
 <!--  Object Storage Config Node -->
-<script type="text/x-red" data-template-name="os-config">
+<script type="text/x-red" data-template-name="os-servivce">
     <div class="form-row">
         <label for="node-config-input-cfgtype"><i class="fa fa-globe"></i> Configuration Information</label>
         <select id="node-config-input-cfgtype">
@@ -133,7 +133,7 @@
 </script>
 
 <script type="text/javascript">
-    RED.nodes.registerType('os-config',{
+    RED.nodes.registerType('os-servivce',{
         category: 'config',
         defaults: {
             cfgtype: {value:"api",required:true},

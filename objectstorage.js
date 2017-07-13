@@ -155,5 +155,5 @@ module.exports = function(RED) {
 		}
 		this.name = n.name;
 	}
-	RED.nodes.registerType("os-config", ObjectStorageConfigNode);
+	RED.nodes.registerType("os-servivce", ObjectStorageConfigNode);
 };
