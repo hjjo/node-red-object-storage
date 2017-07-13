@@ -31,13 +31,13 @@ module.exports = function(RED) {
         this.query = n.query;
 
         // Retrieve the Object Storage config node
-        this.osconfig = RED.nodes.getNode(n.osconfig);
+        this.osinstance = RED.nodes.getNode(n.osinstance);
 
         // copy "this" object in case we need it in context of callbacks of other functions.
         var node = this;
 
         // Check if the Config to the Service is given 
-        if (this.osconfig) {
+        if (this.osinstance) {
             // Do something with:
          	node.status({fill:"green",shape:"ring",text:"ready"});
         } else {
@@ -155,5 +155,5 @@ module.exports = function(RED) {
 		}
 		this.name = n.name;
 	}
-	RED.nodes.registerType("os-servivce", ObjectStorageConfigNode);
+	RED.nodes.registerType("os-service", ObjectStorageConfigNode);
 };

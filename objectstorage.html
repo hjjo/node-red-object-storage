@@ -19,8 +19,8 @@
 <!--  Object Storage Container Node   -->
 <script type="text/x-red" data-template-name="os-container">
     <div class="form-row">
-        <label for="node-input-osconfig"><i class="fa fa-tasks"></i> Object Storage Service</label>
-        <input type="text" id="node-input-osconfig">
+        <label for="node-input-osinstance"><i class="fa fa-tasks"></i> Object Storage Service</label>
+        <input type="text" id="node-input-osinstance">
     </div>
     <div id="method" class="form-row">
         <label for="node-input-method"><i class="fa fa-fileo"></i> Method</label>
@@ -61,7 +61,7 @@
             container: {value:"", required:true},
             query: {value:"", required:true},
             method: {value:"search", required:true},
-            osconfig: {value:"", type:"os-servivce", required:true}
+            osinstance: {value:"", type:"os-service", required:true}
         },
         inputs:1,               
         outputs:1, 
@@ -90,7 +90,7 @@
 <!--  Object Storage Container Node   -->
 
 <!--  Object Storage Config Node -->
-<script type="text/x-red" data-template-name="os-servivce">
+<script type="text/x-red" data-template-name="os-service">
     <div class="form-row">
         <label for="node-config-input-cfgtype"><i class="fa fa-globe"></i> Configuration Information</label>
         <select id="node-config-input-cfgtype">
@@ -133,7 +133,7 @@
 </script>
 
 <script type="text/javascript">
-    RED.nodes.registerType('os-servivce',{
+    RED.nodes.registerType('os-service',{
         category: 'config',
         defaults: {
             cfgtype: {value:"api",required:true},
