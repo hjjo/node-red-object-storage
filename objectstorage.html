@@ -1,0 +1,185 @@
+<!--
+  Copyright 2016 IBM Corp.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  
+  Author: hjjo
+-->
+
+<!--  Object Storage Container Node   -->
+<script type="text/x-red" data-template-name="os-container">
+    <div class="form-row">
+        <label for="node-input-osconfig"><i class="fa fa-tasks"></i> Object Storage Service</label>
+        <input type="text" id="node-input-osconfig">
+    </div>
+    <div id="method" class="form-row">
+        <label for="node-input-method"><i class="fa fa-fileo"></i> Method</label>
+        <select id="node-input-method">
+            <option value="get">Get</option>
+            <option value="create">Create</option>
+            <option value="update">Update</option>
+            <option value="delete">Delete</option>
+            <option value="list">List Objects</option>
+            <option value="search">Search Objects</option>
+        </select>
+    </div>
+    <div id="container" class="form-row">
+        <label for="node-input-container"><i class="fa fa-fileo"></i> Container</label>
+        <input type="text" id="node-input-container" placeholder="Container">
+    </div>
+    <div id="query" class="form-row">
+        <label for="node-input-query"><i class="fa fa-fileo"></i> Query</label>
+        <input type="text" id="node-input-query" placeholder="Query">
+    </div>
+</script>
+
+
+<!-- Next, some simple help text is provided for the node.                   -->
+<script type="text/x-red" data-help-name="os-get">
+	<p>This <b>Object Storage Get Node</b> gets the image from the Object Storage Service on Bluemix. </p>
+	<p>Provide in <b>msg.objectname</b> the name of the stored object in the Object Storage Service and in <b>msg.container</b> the container it resides in.</p>
+	<p>The <b>msg.mode</b> indicates to store the image in the <b>msg.payload</b> (mode=0) or into the given filename and path (mode=1). </p>
+	<p>You can override the node-defaults by giving <b>msg.filename</b> and <b>msg.filepath</b> with the necessary informations.</p>
+	<p>The node returns <b>msg.payload</b> and the <b>msg.objectname</b> name of the object. </p>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('os-container',{
+        category: 'storage',     
+        defaults: {             
+            name: {value:""},
+            container: {value:"", required:true},
+            query: {value:"", required:true},
+            method: {value:"search", required:true},
+            osconfig: {value:"", type:"os-config", required:true}
+        },
+        inputs:1,               
+        outputs:1, 
+        icon: "bluemix-object-storage.png",
+        color: "#A6BBCF",
+        oneditprepare: function() {
+            $("#node-input-mode").change(function() {
+                var choose = $("#node-input-method").val();
+                console.log(choose);
+                if (choose == "search") {
+                	$("#query").show();
+                } else {
+                	$("#query").hide();
+                }
+            });
+        },
+		label: function() {   
+            var method = $("#node-input-method").val();
+            return this.name || "Container:" + method;
+        },
+        labelStyle: function() {
+            return this.name?"node_label_italic":"";
+        }
+    });
+</script>
+<!--  Object Storage Container Node   -->
+
+<!--  Object Storage Config Node -->
+<script type="text/x-red" data-template-name="os-config">
+    <div class="form-row">
+        <label for="node-config-input-cfgtype"><i class="fa fa-globe"></i> Configuration Information</label>
+        <select id="node-config-input-cfgtype">
+            <option value="api">API Based</option>
+            <option value="bluemix">Bluemix Service</option>
+        </select>
+    </div>
+    <div id="serviceName" class="form-row">
+        <label for="node-input-serviceName"><i class="fa fa-fileo"></i> Service Name</label>
+        <select id="node-input-serviceName">
+        </select>
+    </div>
+    <div id="region" class="form-row">
+        <label for="node-config-input-region"><i class="fa fa-globe"></i> Region</label>
+        <select id="node-config-input-region">
+            <option value="dallas">Dallas</option>
+            <option value="london">London</option>
+        </select>
+    </div>
+    <div id="projectId" class="form-row">
+        <label for="node-config-input-projectId"><i class="fa fa-users"></i> Tendant Id</label>
+        <input type="text" id="node-config-input-projectId" placeholder="ProjectId">
+    </div>
+    <div id="userId" class="form-row">
+        <label for="node-config-input-userId"><i class="fa fa-user-secret"></i> User Id</label>
+        <input type="text" id="node-config-input-userId" placeholder="UserId">
+    </div>
+    <!--<div id="userName" class="form-row">
+        <label for="node-config-input-userName"><i class="fa fa-user-secret"></i> User Name</label>
+        <input type="text" id="node-config-input-userName" placeholder="UserName">
+    </div>-->
+    <div id="password" class="form-row">
+        <label for="node-config-input-password"><i class="fa fa-key"></i> Password</label>
+        <input type="text" id="node-config-input-password" placeholder="Password">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-config-input-name" placeholder="Name">
+    </div>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('os-config',{
+        category: 'config',
+        defaults: {
+            cfgtype: {value:"api",required:true},
+            serviceName: {value:"", required:true},
+            region: {value:"dallas",required:true},
+            projectId: {value:"",required:true},
+            userId: {value:"",required:true},
+            userName: {value:"",required:true},
+            password: {value:"",required:true},
+            name: {value:"",required:true}
+        },
+        oneditprepare: function() {
+            var vcapServices = require('./lib/vcap');
+			console.log('VCAP: ', vcapServices);
+			var storages = vcapServices['Object-Storage'];
+
+            storages.each(function(storage){
+                $("#serviceName").append($("<option value='"+storage.name+"'>"+storage.name+"</option>"));
+            });
+            
+            $("#node-config-input-cfgtype").change(function() {
+                var choose = $("#node-config-input-cfgtype").val();
+                console.log(choose);
+                if (choose == "api") {
+                	$("#region").show();
+                	$("#projectId").show();
+                	$("#userId").show();
+                	$("#userName").show();
+                	$("#password").show();
+                    $("#serviceName").hide();
+                } else {
+                	$("#region").hide();
+                	$("#projectId").hide();
+                	$("#userId").hide();
+                	$("#userName").hide();
+                	$("#password").hide();
+                    $("#serviceName").show();
+                    if(storages && storages.length > 0){
+                        $("#serviceName").val(storages[0].name);
+                    }
+                }
+            });
+        },
+        label: function() {
+            return this.region + ":" + (this.name || "object storage config");
+        }
+    });
+</script>
+<!--  Object Storage Config Node -->

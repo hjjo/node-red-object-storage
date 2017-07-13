@@ -1,0 +1,34 @@
+{
+  "name": "node-red-object-storage",
+  "version": "0.0.1",
+  "description": "Node-Red Nodes for IBM Bluemix Object Storage",
+  "main": "objstore.js",
+  "repository": {
+    "type": "git",
+  	"url": "git@github.com:hjjo/node-red-object-storage"
+  },
+  "keywords": [
+    "ibm",
+    "node-red",
+    "bluemix",
+    "swift",
+    "object storage",
+    "metadata search"
+  ],
+  "author": {
+     	"name": "HyeonJeong Jo",
+     	"email": "hjjo@kr.ibm.com"
+  },
+  "license": "Apache-2.0",
+  "node-red" : {
+        "nodes": {
+            "objectstorage": "objectstorage.js"
+        	}
+    },
+  "bugs": {
+    "url": "https://github.com/hjjo/node-red-object-storage/issues"
+  },
+  "dependencies": {
+    "bluemix-objectstorage" : "https://github.com/hjjo/bluemix-objectstorage-serversdk-nodejs.git"
+  }
+}
