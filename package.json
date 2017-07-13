@@ -2,7 +2,7 @@
   "name": "node-red-object-storage",
   "version": "0.0.1",
   "description": "Node-Red Nodes for IBM Bluemix Object Storage",
-  "main": "objstore.js",
+  "main": "objectstorage.js",
   "repository": {
     "type": "git",
   	"url": "git@github.com:hjjo/node-red-object-storage"
