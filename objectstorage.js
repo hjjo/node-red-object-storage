@@ -21,6 +21,13 @@ module.exports = function(RED) {
     "use strict";
 
     var Storage = require('bluemix-objectstorage');
+
+    var vcapServices = require('./lib/vcap');
+	var storages = vcapServices['Object-Storage'];
+
+    RED.httpAdmin.get('/os/vcap', function(req,res) {
+        res.send(JSON.stringify(storages));
+    });
     
     // Container Node
     function ContainerNode(n) {
@@ -129,9 +136,6 @@ module.exports = function(RED) {
 		if (this.cfgtype == 'bluemix') {
             this.serviceName = n.serviceName;
 			// get the VCAP_SERVICES
-			var vcapServices = require('./lib/vcap');
-			console.log('VCAP: ', vcapServices);
-			var storages = vcapServices['Object-Storage'];
 
             var storage = storages.find(function(s){
                 return s.name = n.serviceName;

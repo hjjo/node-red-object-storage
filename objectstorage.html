@@ -146,12 +146,12 @@
             name: {value:"",required:true}
         },
         oneditprepare: function() {
-            var vcapServices = require('./lib/vcap');
-			console.log('VCAP: ', vcapServices);
-			var storages = vcapServices['Object-Storage'];
+            $.getJSON('os/vcap/',function(storages) {
+                serviceSelect.change();
 
-            storages.forEach(function(storage){
-                $("#serviceName").append($("<option value='"+storage.name+"'>"+storage.name+"</option>"));
+                storages.forEach(function(storage){
+                    $("#serviceName").append($("<option value='"+storage.name+"'>"+storage.name+"</option>"));
+                });
             });
             
             $("#node-config-input-cfgtype").change(function() {
