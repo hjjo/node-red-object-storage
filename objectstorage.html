@@ -150,6 +150,9 @@
                 storages.forEach(function(storage){
                     $("#serviceName").append($("<option value='"+storage.name+"'>"+storage.name+"</option>"));
                 });
+                if(storages && storages.length > 0){
+                    $("#serviceName").val(storages[0].name);
+                }
                 $("#node-config-input-cfgtype").change();
             });
             
@@ -170,9 +173,6 @@
                 	$("#userName").hide();
                 	$("#password").hide();
                     $("#serviceName").show();
-                    if(storages && storages.length > 0){
-                        $("#serviceName").val(storages[0].name);
-                    }
                 }
             });
         },
