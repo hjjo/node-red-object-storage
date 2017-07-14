@@ -80,10 +80,10 @@ module.exports = function(RED) {
          	}
 
             var credentials = {
-                projectId: node.osconfig.projectId,
-                userId: node.osconfig.userId,
-                password: node.osconfig.password,
-                region: node.osconfig.region
+                projectId: node.osinstance.projectId,
+                userId: node.osinstance.userId,
+                password: node.osinstance.password,
+                region: node.osinstance.region
             };
 
             var objstorage = new Storage(credentials);
@@ -155,5 +155,5 @@ module.exports = function(RED) {
 		}
 		this.name = n.name;
 	}
-	RED.nodes.registerType("os-service", ObjectStorageConfigNode);
+	RED.nodes.registerType("os-service-config", ObjectStorageConfigNode);
 };
