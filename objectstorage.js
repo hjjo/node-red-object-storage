@@ -144,7 +144,7 @@ module.exports = function(RED) {
                 return (s.name == n.serviceName);
             });
 
-            osCred = storage.credentials;
+            var osCred = storage.credentials;
 			
 			// Get them
 			this.region = osCred.region;
