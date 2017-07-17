@@ -147,10 +147,10 @@
         oneditprepare: function() {
             $.getJSON('os/vcap/',function(storages) {
                 storages.forEach(function(storage){
-                    $("#node-input-serviceName").append($("<option value='"+storage.name+"'>"+storage.name+"</option>"));
+                    $("#node-config-input-serviceName").append($("<option value='"+storage.name+"'>"+storage.name+"</option>"));
                 });
                 if(storages && storages.length > 0){
-                    $("#node-input-serviceName").val(storages[0].name);
+                    $("#node-config-input-serviceName").val(storages[0].name);
                 }
                 $("#node-config-input-cfgtype").change();
             });
