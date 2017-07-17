@@ -97,10 +97,10 @@ module.exports = function(RED) {
             var objstorage = new Storage(credentials);
             
 	        if (method == "search") {
-
-                objstorage.getContainer(node.container)
-                    .then(function(container) {
-                        container.search(node.query).then(function(objList){
+                node.err(container)
+                objstorage.getContainer(container)
+                    .then(function(c) {
+                        c.search(node.query).then(function(objList){
                             msg.payload = objList;
                             node.status({fill:"green",shape:"ring",text:"ready"});
                             node.send(msg);
@@ -113,6 +113,7 @@ module.exports = function(RED) {
                     .catch(function(err) {
                         msg.error = err;
                         node.error("Faild to get container", msg);
+                        node.error(msg.error);
                     });
 		    }
         });
