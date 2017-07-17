@@ -145,6 +145,15 @@
             name: {value:""}
         },
         oneditprepare: function() {
+            $.getJSON('/os/vcap/',function(storages) {
+                storages.forEach(function(storage){
+                    $("#node-input-serviceName").append($("<option value='"+storage.name+"'>"+storage.name+"</option>"));
+                });
+                if(storages && storages.length > 0){
+                    $("#node-input-serviceName").val(storages[0].name);
+                }
+                $("#node-config-input-cfgtype").change();
+            });
             
             $("#node-config-input-cfgtype").change(function() {
                 var choose = $("#node-config-input-cfgtype").val();
@@ -157,15 +166,6 @@
                 	$("#password").show();
                     $("#serviceName").hide();
                 } else {
-                    $.getJSON('os/vcap/',function(storages) {
-                        storages.forEach(function(storage){
-                            $("#node-input-serviceName").append($("<option value='"+storage.name+"'>"+storage.name+"</option>"));
-                        });
-                        if(storages && storages.length > 0){
-                            $("#node-input-serviceName").val(storages[0].name);
-                        }
-                        $("#node-config-input-cfgtype").change();
-                    });
 
                 	$("#region").hide();
                 	$("#projectId").hide();
