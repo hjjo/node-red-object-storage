@@ -25,6 +25,7 @@ module.exports = function(RED) {
     RED.httpAdmin.get('/os/vcap', function(req,res) {
         var vcapServices = require('./lib/vcap');
 	    var storages = vcapServices['Object-Storage'];
+        console.log(storages);
 
         res.send(JSON.stringify(storages));
     });
