@@ -20,7 +20,7 @@
 module.exports = function(RED) {
     "use strict";
 
-    var Storage = require('bluemix-objectstorage');
+    var Storage = require('bluemix-objectstorage').ObjectStorage;
 
     RED.httpAdmin.get('/os/vcap', function(req,res) {
         var vcapServices = require('./lib/vcap');
@@ -140,11 +140,11 @@ module.exports = function(RED) {
             var vcapServices = require('./lib/vcap');
 	        var storages = vcapServices['Object-Storage'];
 
-            var storage = storages.find(function(s){
+            var st = storages.find(function(s){
                 return (s.name == n.serviceName);
             });
 
-            var osCred = storage.credentials;
+            var osCred = st.credentials;
 			
 			// Get them
 			this.region = osCred.region;
