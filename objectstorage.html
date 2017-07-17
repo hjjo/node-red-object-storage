@@ -145,7 +145,7 @@
             name: {value:""}
         },
         oneditprepare: function() {
-            $.getJSON('/os/vcap/',function(storages) {
+            $.getJSON('os/vcap/',function(storages) {
                 storages.forEach(function(storage){
                     $("#node-input-serviceName").append($("<option value='"+storage.name+"'>"+storage.name+"</option>"));
                 });

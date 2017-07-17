@@ -141,7 +141,7 @@ module.exports = function(RED) {
 	        var storages = vcapServices['Object-Storage'];
 
             var storage = storages.find(function(s){
-                return s.name = n.serviceName;
+                return (s.name == n.serviceName);
             });
 
             osCred = storage.credentials;
