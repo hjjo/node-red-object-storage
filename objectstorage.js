@@ -20,7 +20,10 @@
 module.exports = function(RED) {
     "use strict";
 
-    var Storage = require('bluemix-objectstorage').ObjectStorage;
+    var os_lib = require('bluemix-objectstorage');
+    var ObjectStorage = os_lib.ObjectStorage;
+    var ObjectStorageContainer = os_lib.ObjectStorageContainer;
+    var ObjectStorageObject = os_lib.ObjectStorageObject;
 
     RED.httpAdmin.get('/os/vcap', function(req,res) {
         var vcapServices = require('./lib/vcap');
@@ -94,28 +97,33 @@ module.exports = function(RED) {
                 region: node.osinstance.region
             };
 
-            var objstorage = new Storage(credentials);
+            var objstorage = new ObjectStorage(credentials);
+            var objcontainer = new ObjectStorageContainer(container, objstorage);
             
 	        if (method == "search") {
-                node.err(container)
-                objstorage.getContainer(container)
-                    .then(function(c) {
-                        c.search(node.query).then(function(objList){
-                            msg.payload = objList;
-                            node.status({fill:"green",shape:"ring",text:"ready"});
-                            node.send(msg);
-                        })
-                        .catch(function(err){
-                            msg.error = err;
-                            node.error("Faild to search objects", msg);
-                        })
-                    })
-                    .catch(function(err) {
-                        msg.error = err;
-                        node.error("Faild to get container", msg);
-                        node.error(msg.error);
-                    });
+                objcontainer.search(node.query).then(function(objList){
+                    msg.payload = objList;
+                    node.status({fill:"green",shape:"ring",text:"ready"});
+                    node.send(msg);
+                })
+                .catch(function(err){
+                    msg.error = err;
+                    node.error("Faild to search objects", msg);
+                    node.error(msg.error);
+                })
 		    }
+            else if(method == "list"){
+                objcontainer.listObjects().then(function(objList){
+                    msg.payload = objList;
+                    node.status({fill:"green",shape:"ring",text:"ready"});
+                    node.send(msg);
+                })
+                .catch(function(err){
+                    msg.error = err;
+                    node.error("Faild to get objects", msg);
+                    node.error(msg.error);
+                })
+            }
         });
 
         // respond to close....
@@ -126,6 +134,140 @@ module.exports = function(RED) {
         });
     }
     RED.nodes.registerType("os-container", ContainerNode);
+
+    // Object Node
+    function ObjectNode(n) {
+        RED.nodes.createNode(this,n);
+
+        this.method = n.method; // list objects, search, 
+        this.container = n.container;
+        this.object = n.object;
+        this.tag = n.tag;
+
+        // Retrieve the Object Storage config node
+        this.osinstance = RED.nodes.getNode(n.osinstance);
+
+        // copy "this" object in case we need it in context of callbacks of other functions.
+        var node = this;
+
+        // Check if the Config to the Service is given 
+        if (this.osinstance) {
+            // Do something with:
+         	node.status({fill:"green",shape:"ring",text:"ready"});
+        } else {
+            // No config node configured
+	        node.status({fill:"red",shape:"ring",text:"error"});
+	        node.error('No object storage configuration found!');
+	        return;
+        }
+
+        // respond to inputs....
+        this.on('input', function (msg) {
+         	// Local Vars and Modules
+
+         	var method;
+			var container;
+			var object;
+            var tag;
+            var file;
+
+	        // Set the status to green
+         	node.status({fill:"green",shape:"dot",text:"connected"});
+
+         	// Check method 
+         	if ((msg.method) && (msg.method.trim() !== "")) {
+         		method = msg.method;
+         	} else {
+     			method = node.method;
+         	}
+
+         	// Check container
+         	if ((msg.container) && (msg.container.trim() !== "")) {
+         		container = msg.container;
+         	} else {
+     			container = node.container;
+         	}
+
+			// Check object
+         	if ((msg.object) && (msg.object.trim() !== "")) {
+         		object = msg.object;
+         	} else {
+     			object = node.object;
+         	}
+
+             // Check tag
+         	if ((msg.tag) && (msg.tag.trim() !== "")) {
+         		tag = msg.tag;
+         	} else {
+     			tag = node.tag;
+         	}
+
+             // Check file
+         	if ((msg.file) && (msg.file.trim() !== "")) {
+         		file = msg.file;
+         	} else {
+     			node.error("file is not set.");
+         	}
+
+            var credentials = {
+                projectId: node.osinstance.projectId,
+                userId: node.osinstance.userId,
+                password: node.osinstance.password,
+                region: node.osinstance.region
+            };
+
+            var objstorage = new ObjectStorage(credentials);
+            var objcontainer = new ObjectStorageContainer(container, objstorage);
+            var objobject = new ObjectStorageObject(object, objcontainer);
+            
+	        if (method == "tag") {
+                objobject.metadata().then(function(orginMeta){
+                    tag = tag.replace(/\s+/g, '');
+                    var tags = tag.split(",");
+                    tags.forEach(function(t){
+                        var tagObj = t.split("=");
+                        orginMeta[tagObj[0]] = tagObj[1];
+                    });
+                    
+                    objobject.updateMetadata(orginMeta).then(function(){
+                        console.log(tag)
+                        objobject.metadata().then(function(metadata){
+                            msg.payload = metadata
+                            node.status({fill:"green",shape:"ring",text:"ready"});
+                            node.send(msg);
+                        })
+                        .catch(function(err){
+                            msg.error = err;
+                            node.error("Faild to get metadata", msg);
+                            node.error(msg.error);
+                        })
+                    })
+                    .catch(function(err){
+                        msg.error = err;
+                        node.error("Faild to update metadata", msg);
+                        node.error(msg.error);
+                    })
+                })
+                .catch(function(err){
+                    msg.error = err;
+                    node.error("Faild to get object", msg);
+                    node.error(msg.error);
+                })
+		    }
+            else if(method == "put"){
+                console.log(file)
+                //objcontainer.createObject(file)
+            }
+        });
+
+        // respond to close....
+        this.on("close", function() {
+            // Called when the node is shutdown - eg on redeploy.
+            // Allows ports to be closed, connections dropped etc.
+            // eg: node.client.disconnect();
+        });
+    }
+    RED.nodes.registerType("os-object", ObjectNode);
 
     // Object Storage Config Node
 	function ObjectStorageConfigNode(n) {

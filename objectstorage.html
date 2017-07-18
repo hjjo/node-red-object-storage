@@ -43,7 +43,6 @@
     </div>
 </script>
 
-
 <!-- Next, some simple help text is provided for the node.                   -->
 <script type="text/x-red" data-help-name="os-get">
 	<p>This <b>Object Storage Get Node</b> gets the image from the Object Storage Service on Bluemix. </p>
@@ -68,7 +67,7 @@
         icon: "bluemix-object-storage.png",
         color: "#A6BBCF",
         oneditprepare: function() {
-            $("#node-input-mode").change(function() {
+            $("#node-input-method").change(function() {
                 var choose = $("#node-input-method").val();
                 console.log(choose);
                 if (choose == "search") {
@@ -87,6 +86,75 @@
     });
 </script>
 <!--  Object Storage Container Node   -->
+
+<script type="text/x-red" data-template-name="os-object">
+    <div class="form-row">
+        <label for="node-input-osinstance"><i class="fa fa-tasks"></i> Object Storage Service</label>
+        <input type="text" id="node-input-osinstance">
+    </div>
+    <div id="method" class="form-row">
+        <label for="node-input-method"><i class="fa fa-fileo"></i> Method</label>
+        <select id="node-input-method">
+            <option value="put">Put</option>
+            <option value="tag">Tags</option>
+        </select>
+    </div>
+    <div id="container" class="form-row">
+        <label for="node-input-container"><i class="fa fa-fileo"></i> Container</label>
+        <input type="text" id="node-input-container" placeholder="Container">
+    </div>
+    <div id="object" class="form-row">
+        <label for="node-input-object"><i class="fa fa-fileo"></i> Object</label>
+        <input type="text" id="node-input-object" placeholder="Object Name">
+    </div>
+    <div id="tag" class="form-row">
+        <label for="node-input-tag"><i class="fa fa-fileo"></i> Tag</label>
+        <input type="text" id="node-input-tag" placeholder="key=value,key=value">
+    </div>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('os-object',{
+        category: 'storage',     
+        defaults: {             
+            name: {value:""},
+            container: {value:"", required:true},
+            object: {value:"", required:true},
+            tag: {value:"", required:true},
+            method: {value:"tag", required:true},
+            osinstance: {value:"", type:"os-service-config", required:true}
+        },
+        inputs:1,               
+        outputs:1, 
+        icon: "bluemix-object-storage.png",
+        color: "#A6BBCF",
+        oneditprepare: function() {
+            $("#tag").val("");
+            $("#node-input-method").change(function() {
+                var choose = $("#node-input-method").val();
+                console.log(choose);
+                if (choose == "tag") {
+                	$("#tag").show();
+                    $("#object").show();
+                } 
+                else if(choose == "put"){
+                    $("#tag").hide();
+                    $("#object").hide();
+                }
+                else {
+                	$("#tag").hide();
+                    $("#object").hide();
+                }
+            });
+        },
+		label: function() {   
+            return this.name || "Object";
+        },
+        labelStyle: function() {
+            return this.name?"node_label_italic":"";
+        }
+    });
+</script>
 
 <!--  Object Storage Config Node -->
 <script type="text/x-red" data-template-name="os-service-config">
