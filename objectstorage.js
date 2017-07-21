@@ -189,7 +189,7 @@ module.exports = function(RED) {
          	}
 
 			// Check object
-         	if (msg.object) {
+         	if ((msg.object) && (msg.object.trim() !== "")) {
          		object = msg.object;
          	} else {
      			object = node.object;
@@ -203,7 +203,7 @@ module.exports = function(RED) {
          	}
 
              // Check file
-         	if ((msg.file) && (msg.file.trim() !== "")) {
+         	if (msg.file) {
          		file = msg.file;
          	} else {
      			node.error("file is not set.");
