@@ -256,7 +256,16 @@ module.exports = function(RED) {
 		    }
             else if(method == "put"){
                 console.log(file)
-                //objcontainer.createObject(file)
+                objcontainer.createObject(file).then(function(result){
+                    msg.payload = result
+                    node.status({fill:"green",shape:"ring",text:"ready"});
+                    node.send(msg);
+                })
+                .catch(function(err){
+                    msg.error = err;
+                    node.error("Faild to create object", msg);
+                    node.error(msg.error);
+                })
             }
         });
 
