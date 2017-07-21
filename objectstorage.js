@@ -101,14 +101,14 @@ module.exports = function(RED) {
             var objcontainer = new ObjectStorageContainer(container, objstorage);
             
 	        if (method == "search") {
-                objcontainer.search(node.query).then(function(objList){
+                objcontainer.search(query).then(function(objList){
                     msg.payload = objList;
                     node.status({fill:"green",shape:"ring",text:"ready"});
                     node.send(msg);
                 })
                 .catch(function(err){
                     msg.error = err;
-                    node.error("Faild to search objects", msg);
+                    node.error("Failed to search objects", msg);
                     node.error(msg.error);
                 })
 		    }
