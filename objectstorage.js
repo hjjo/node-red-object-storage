@@ -189,7 +189,7 @@ module.exports = function(RED) {
          	}
 
 			// Check object
-         	if ((msg.object) && (msg.object.trim() !== "")) {
+         	if (msg.object) {
          		object = msg.object;
          	} else {
      			object = node.object;
