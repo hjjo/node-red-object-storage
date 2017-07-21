@@ -255,7 +255,7 @@ module.exports = function(RED) {
                 })
 		    }
             else if(method == "put"){
-                objcontainer.createObject(object, file, true).then(function(result){
+                objcontainer.uploadObject(file).then(function(result){
                     msg.payload = result
                     node.status({fill:"green",shape:"ring",text:"ready"});
                     node.send(msg);
