@@ -97,6 +97,7 @@
         <select id="node-input-method">
             <option value="put">Put</option>
             <option value="tag">Tags</option>
+            <option value="tempUrl">Get Temporary URL</option>
         </select>
     </div>
     <div id="container" class="form-row">
@@ -140,6 +141,10 @@
                 else if(choose == "put"){
                     $("#tag").hide();
                     $("#object").hide();
+                }
+                else if(choose == "tempUrl"){
+                    $("#tag").hide();
+                    $("#object").show();
                 }
                 else {
                 	$("#tag").hide();
@@ -197,6 +202,10 @@
         <label for="node-config-input-name"><i class="fa fa-tag"></i> Name</label>
         <input type="text" id="node-config-input-name" placeholder="Name">
     </div>
+    <div id="tempUrlKey" class="form-row">
+        <label for="node-config-input-tempUrlKey"><i class="fa fa-users"></i> Temporary URL Key</label>
+        <input type="text" id="node-config-input-tempUrlKey" placeholder="Key">
+    </div>
 </script>
 
 <script type="text/javascript">
@@ -210,7 +219,8 @@
             userId: {value:"",required:true},
             userName: {value:"",required:true},
             password: {value:"",required:true},
-            name: {value:""}
+            name: {value:""},
+            tempUrlKey: {value:""}
         },
         oneditprepare: function() {
             $.getJSON('os/vcap/',function(storages) {

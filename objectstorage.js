@@ -94,7 +94,8 @@ module.exports = function(RED) {
                 projectId: node.osinstance.projectId,
                 userId: node.osinstance.userId,
                 password: node.osinstance.password,
-                region: node.osinstance.region
+                region: node.osinstance.region,
+                tempUrlKey: node.osinstance.tempUrlKey
             };
 
             var objstorage = new ObjectStorage(credentials);
@@ -170,6 +171,7 @@ module.exports = function(RED) {
 			var object;
             var tag;
             var file;
+            var key;
 
 	        // Set the status to green
          	node.status({fill:"green",shape:"dot",text:"connected"});
@@ -209,11 +211,19 @@ module.exports = function(RED) {
      			node.error("file is not set.");
          	}
 
+              // Check key
+         	if (msg.key) {
+         		key = msg.key;
+         	} else {
+     			//do nothing
+         	}
+
             var credentials = {
                 projectId: node.osinstance.projectId,
                 userId: node.osinstance.userId,
                 password: node.osinstance.password,
-                region: node.osinstance.region
+                region: node.osinstance.region,
+                tempUrlKey: node.osinstance.tempUrlKey
             };
 
             var objstorage = new ObjectStorage(credentials);
@@ -255,7 +265,7 @@ module.exports = function(RED) {
                 })
 		    }
             else if(method == "put"){
-                objcontainer.uploadObject(file).then(function(result){
+                objcontainer.createObject(object, file, true, key).then(function(result){
                     msg.payload = result
                     node.status({fill:"green",shape:"ring",text:"ready"});
                     node.send(msg);
@@ -265,6 +275,11 @@ module.exports = function(RED) {
                     node.error("Faild to create object", msg);
                     node.error(msg.error);
                 })
+            }
+            else if(method == "tempUrl"){
+                msg.payload = objobject.getTempUrl(300);
+                node.status({fill:"green",shape:"ring",text:"ready"});
+                node.send(msg);
             }
         });
 
@@ -311,6 +326,9 @@ module.exports = function(RED) {
 			//this.userName = n.userName;
 			this.password = n.password;		
 		}
+        if(n.tempUrlKey && n.tempUrlKey.trim() !== ""){
+            this.tempUrlKey = n.tempUrlKey;
+        }
 		this.name = n.name;
 	}
 	RED.nodes.registerType("os-service-config", ObjectStorageConfigNode);
