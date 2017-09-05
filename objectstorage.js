@@ -208,7 +208,9 @@ module.exports = function(RED) {
          	if (msg.file) {
          		file = msg.file;
          	} else {
-     			node.error("file is not set.");
+     			if(method == "put"){
+                     node.error("file is not set.");
+                }
          	}
 
               // Check key
@@ -277,7 +279,7 @@ module.exports = function(RED) {
                 })
             }
             else if(method == "tempUrl"){
-                msg.payload = objobject.getTempUrl(300);
+                msg.payload = objobject.getTempUrl(3600*24);
                 node.status({fill:"green",shape:"ring",text:"ready"});
                 node.send(msg);
             }
